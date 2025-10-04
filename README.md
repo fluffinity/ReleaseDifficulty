@@ -14,3 +14,8 @@ With this mod the original damage will be restored.
 - Build the mod via `dotnet build`
 - Place ReleaseDifficulty.dll in the plugins directory of BepInEx
 - Enjoy
+
+## Options
+|Name|Type|Default|Description|
+|----|----|-------|-----------|
+|EnableReleaseDifficulty|bool|true|Control whether this mod is active|
