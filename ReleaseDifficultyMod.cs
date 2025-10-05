@@ -22,20 +22,25 @@ public sealed class ReleaseDifficultyMod : BaseUnityPlugin
         LogSrc.LogInfo("Mod loaded and initialized");
         Harmony.CreateAndPatchAll(typeof(ReleaseDifficultyMod.PatchHeroController), null);
         LogSrc.LogInfo("Patched all methods");
-
     }
 
     [HarmonyPatch(typeof(HeroController), "TakeDamage")]
     static class PatchHeroController
     {
+        private static string[] enemyNames = { 
+            // For the Stick Insects spin attack
+            "Spin Collider"
+        };
+
         private static void Prefix(ref GameObject go, ref CollisionSide damageSide, ref int damageAmount, ref HazardType hazardType, ref DamagePropertyFlags damagePropertyFlags)
         {
-            LogSrc.LogDebug($"HealthManager.TakeDamage({go.name}, {damageSide}, {damageAmount}, {hazardType}, {damagePropertyFlags})");
             if (!ReleaseDifficultyMod.Enable.Value)
             {
                 return;
             }
-            if(hazardType == HazardType.SPIKES || hazardType == HazardType.SINK)
+
+            LogSrc.LogDebug($"HealthManager.TakeDamage({go.name}, {damageSide}, {damageAmount}, {hazardType}, {damagePropertyFlags})");
+            if (hazardType == HazardType.SPIKES || hazardType == HazardType.SINK)
             {
                 if(go.name.Contains("Cog Damager") || go.name.Contains("Sand Centipede"))
                 {
@@ -45,6 +50,16 @@ public sealed class ReleaseDifficultyMod : BaseUnityPlugin
                     hazardType = HazardType.STEAM;
                 }
                 //KETTENSÄGEN!!!!!!!
+            } else if(hazardType == HazardType.ENEMY)
+            {
+                foreach(string enemy in enemyNames)
+                {
+                    if(go.name.Contains(enemy))
+                    {
+                        damageAmount = 2;
+                        break;
+                    }
+                }
             }
         }
     }
