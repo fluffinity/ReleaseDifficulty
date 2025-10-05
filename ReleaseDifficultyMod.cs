@@ -4,6 +4,7 @@ using BepInEx.Logging;
 using GlobalEnums;
 using HarmonyLib;
 using UnityEngine;
+using TeamCherry.GameCore;
 
 [BepInPlugin(ReleaseDifficultyMod.ModID, ReleaseDifficultyMod.ModName, ReleaseDifficultyMod.ModVersion)]
 public sealed class ReleaseDifficultyMod : BaseUnityPlugin
@@ -32,9 +33,16 @@ public sealed class ReleaseDifficultyMod : BaseUnityPlugin
             "Spin Collider"
         };
 
+        private static DeltaTimeCalculator TimeElapsed = new DeltaTimeCalculator();
+        private static bool FreshHit = false;
         private static void Prefix(ref GameObject go, ref CollisionSide damageSide, ref int damageAmount, ref HazardType hazardType, ref DamagePropertyFlags damagePropertyFlags)
         {
             if (!ReleaseDifficultyMod.Enable.Value)
+            {
+                return;
+            }
+
+            if(FreshHit && TimeElapsed.GetDeltaTimeMillis() <= 200)
             {
                 return;
             }
@@ -61,6 +69,9 @@ public sealed class ReleaseDifficultyMod : BaseUnityPlugin
                     }
                 }
             }
+            FreshHit = true;
+            TimeElapsed.Reset();
+            TimeElapsed.Start();
         }
     }
 }
