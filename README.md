@@ -8,6 +8,7 @@ With this mod the original damage will be restored.
 ## Current Changes
 - Cogs deal 2 damage again
 - Sand centripedes deal 2 damage again
+- The spin attack of the flying stick insects deals 2 damage again
 
 ## Installation
 - Ensure BepInEx is installed for Silksong
