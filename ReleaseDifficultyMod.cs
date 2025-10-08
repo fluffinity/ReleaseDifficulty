@@ -33,8 +33,6 @@ public sealed class ReleaseDifficultyMod : BaseUnityPlugin
             "Spin Collider"
         };
 
-        private static DeltaTimeCalculator TimeElapsed = new DeltaTimeCalculator();
-        private static bool FreshHit = false;
         private static void Prefix(ref GameObject go, ref CollisionSide damageSide, ref int damageAmount, ref HazardType hazardType, ref DamagePropertyFlags damagePropertyFlags)
         {
             if (!ReleaseDifficultyMod.Enable.Value)
@@ -42,7 +40,8 @@ public sealed class ReleaseDifficultyMod : BaseUnityPlugin
                 return;
             }
 
-            if(FreshHit && TimeElapsed.GetDeltaTimeMillis() <= 200)
+            var instance = HeroController.instance;
+            if(!instance.CanTakeDamage())
             {
                 return;
             }
@@ -69,9 +68,6 @@ public sealed class ReleaseDifficultyMod : BaseUnityPlugin
                     }
                 }
             }
-            FreshHit = true;
-            TimeElapsed.Reset();
-            TimeElapsed.Start();
         }
     }
 }
